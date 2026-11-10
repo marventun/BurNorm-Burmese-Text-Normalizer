@@ -18,8 +18,8 @@ Old draft notes:
   3. (C M*)Cေ[ိီုူ]        -> (C M*)ေ C[ိီုူ] (တွကေို -> တွေကို)
   Orphan ြ with no consonant within next 1-2 chars: left, logged ya_pin_orphan.
 Pali soft guard: triggered only by E_VOWEL, line has C္C stacks and no Zawgyi-range -> skip (pali_skip).
-Candidates: Rabbit(legacy_font.convert)+P1 scrub, and reorder+P1 scrub. Best accepted iff
-  q2(cand) > q2(orig)+0.02, where q2 = phase1_normalize.unicode_quality - wrong_order_signals/myanmar_chars
+Candidates: Rabbit(legacy_font.convert), and reorder. Best accepted iff
+  q2(cand) > q2(orig)+0.02, where q2 = phase1.unicode_quality - wrong_order_signals/myanmar_chars
   (P1 formula reused; the wrong-order term is needed since pure reorders don't change asat/wa counts).
 Else keep original, log visual_order_fp.
 PARKED (not in this ship): U+1069->္တ (Wwin/bit), Win hole tables, 1065/1066/109A-E.
@@ -130,10 +130,10 @@ def to_unicode_line_phase2(unit, rabbit_convert_fn=None):
         rabbit_convert_fn = zawgyi_rabbit.convert
     if rabbit_convert_fn:
       try:
-        cands.append(("accepted_rabbit", p1.scrub_residual_zawgyi_glyphs(rabbit_convert_fn(unit))[0]))
+        cands.append(("accepted_rabbit", rabbit_convert_fn(unit)))
       except Exception:
         pass
-    cands.append(("accepted_reorder", p1.scrub_residual_zawgyi_glyphs(greedy_reorder(unit))[0]))
+    cands.append(("accepted_reorder", greedy_reorder(unit)))
     # lock 3: leading ေ+C never auto-touched -> reject any candidate that changes the parked-ေ count
     pk = parked_e_leading(unit)
     cands = [c for c in cands if parked_e_leading(c[1]) == pk]

@@ -34,6 +34,20 @@ def collapse_marks(text: str) -> str:
     return text
 
 
+# Common Unicode mark-order leftovers after Zawgyi convert / OCR.
+_MARK_ORDER = (
+    ("့ဲ", "ဲ့"),
+    ("့ံ", "ံ့"),
+)
+
+
+def reorder_marks(text: str) -> str:
+    t = text or ""
+    for bad, good in _MARK_ORDER:
+        t = t.replace(bad, good)
+    return t
+
+
 def cleanup(text: str) -> str:
     """NFC + strip invisibles + glue/collapse marks. Safe for already-Unicode text."""
     if not text:
@@ -44,6 +58,7 @@ def cleanup(text: str) -> str:
     text = re.sub(r"[\u0080-\u00ff\u0100-\u024f]{2,}", " ", text)
     text = _WATERMARK.sub(" ", text)
     text = glue_marks(text)
+    text = reorder_marks(text)
     text = collapse_marks(text)
     text = _HSPACE_RUN.sub(" ", text)
     text = _BEFORE_DEPENDENT.sub("", text)

@@ -1,4 +1,4 @@
-from myanmar_uni_convert.legacy_maps import convert_table, table_for_face, table_for_kind
+from burnorm.legacy_maps import convert_table, table_for_face, table_for_kind
 
 
 def test_table_lookup():

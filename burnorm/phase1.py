@@ -10,7 +10,6 @@ _MY = re.compile(r"[\u1000-\u109F]")
 _ZG = re.compile(r"[\u105A-\u108F\u109A-\u109F]")
 _ASAT = re.compile(r"[\u1000-\u1021]\u103a")
 _WA = re.compile(r"[\u1000-\u1021]\u103d")
-SCRUB_TARGETS = "\u108c\u1091\u1067"
 EPS = 0.01
 GAIN = 0.02
 
@@ -36,25 +35,6 @@ def unicode_quality(text):
     t = text or ""
     raw = len(_ASAT.findall(t)) + len(_WA.findall(t)) - 4 * zg_mark_count(t)
     return raw / max(1, myanmar_count(t))
-
-
-def scrub_residual_zawgyi_glyphs(text):
-    """108C->102E, 1091->100D always; 1067->1039 1006 only if 1005 within 2 chars before."""
-    log = []
-    if not text or not any(c in text for c in SCRUB_TARGETS):
-        return text, log
-    text = text.replace("\u108c", "\u102e").replace("\u1091", "\u100d")
-    if "\u1067" in text:
-        out = []
-        for i, ch in enumerate(text):
-            if ch == "\u1067":
-                if "\u1005" in text[max(0, i - 2):i]:
-                    out.append("\u1039\u1006")
-                    continue
-                log.append({"pos": i, "reason": "1067_no_sa_before", "ctx": text[max(0, i - 6):i + 6]})
-            out.append(ch)
-        text = "".join(out)
-    return text, log
 
 
 def _score(detector, text):
@@ -83,16 +63,14 @@ def to_unicode_line(unit, detector, zawgyi_min=0.5, rabbit_convert_fn=None):
     strong = score_u >= 0.95 or has_zg_range(unit) or zg_mark_count(unit) >= 3 or base_q < -0.05
     weak = score_u >= zawgyi_min
     if not (strong or weak):
-        out, _ = scrub_residual_zawgyi_glyphs(unit)
-        return out, score_u, False, "unicode_keep"
-    cand, _ = scrub_residual_zawgyi_glyphs(rabbit_convert_fn(unit))
+        return unit, score_u, False, "unicode_keep"
+    cand = rabbit_convert_fn(unit)
     qc = unicode_quality(cand)
     if strong and qc >= base_q - EPS:
         return cand, score_u, True, "strong_accept"
     if not strong and qc > base_q + GAIN:
         return cand, score_u, True, "weak_accept"
-    out, _ = scrub_residual_zawgyi_glyphs(unit)
-    return out, score_u, False, "rabbit_fp_keep"
+    return unit, score_u, False, "rabbit_fp_keep"
 
 
 def to_unicode_text(text, detector, zawgyi_min=0.5, rabbit_convert_fn=None, stats=None):
@@ -116,19 +94,11 @@ def count_zawgyi_lines(text, detector, min_score=0.5, min_my=10):
                if myanmar_count(line) >= min_my and _score(detector, line) >= min_score)
 
 
-def residual_glyph_count(text, broad=False):
-    if broad:
-        return zg_mark_count(text)
-    return sum((text or "").count(c) for c in SCRUB_TARGETS)
-
-
 def book_done_ok(text, detector, max_zg_lines=0):
-    """DONE iff zg>=0.5 lines <= max_zg_lines AND scrub-target residuals (108C/1091/1067) == 0.
-    Broad Zawgyi-range count is reported but not gating (Pali/Shan FPs)."""
+    """DONE iff zg>=0.5 lines <= max_zg_lines. Broad Zawgyi-range count is reported only."""
     stats = {
         "zg_lines": count_zawgyi_lines(text, detector),
-        "residual_targets": residual_glyph_count(text),
-        "residual_broad": residual_glyph_count(text, broad=True),
+        "residual_broad": zg_mark_count(text),
     }
-    ok = stats["zg_lines"] <= max_zg_lines and stats["residual_targets"] == 0
+    ok = stats["zg_lines"] <= max_zg_lines
     return ok, stats

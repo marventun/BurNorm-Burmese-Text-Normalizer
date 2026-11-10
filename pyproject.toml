@@ -3,14 +3,25 @@ requires = ["setuptools>=68", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "myanmar-uni-convert"
+name = "burnorm"
 version = "0.1.0"
-description = "Convert legacy Myanmar encodings and Zawgyi text to Unicode"
+description = "BurNorm — Burmese encoding convert + Unicode normalize (BurVision research family)"
 readme = "README.md"
 requires-python = ">=3.10"
 license = { text = "Apache-2.0" }
 authors = [{ name = "Htoo Myat Tun" }]
-keywords = ["myanmar", "burmese", "unicode", "zawgyi", "wininnwa", "font"]
+keywords = [
+  "burnorm",
+  "burvision",
+  "myanmar",
+  "burmese",
+  "unicode",
+  "normalize",
+  "zawgyi",
+  "wininnwa",
+  "pdf",
+  "font",
+]
 classifiers = [
   "Development Status :: 3 - Alpha",
   "Intended Audience :: Developers",
@@ -25,17 +36,17 @@ detect = ["myanmartools>=1.2.0"]
 dev = ["pytest>=7.0", "myanmartools>=1.2.0"]
 
 [project.scripts]
-myanmar-uni-convert = "myanmar_uni_convert.cli:main"
+burnorm = "burnorm.cli:main"
 
 [project.urls]
-Homepage = "https://github.com/EXAMPLE/myanmar-uni-convert"
-Issues = "https://github.com/EXAMPLE/myanmar-uni-convert/issues"
+Homepage = "https://github.com/EXAMPLE/burnorm"
+Issues = "https://github.com/EXAMPLE/burnorm/issues"
 
 [tool.setuptools.packages.find]
-include = ["myanmar_uni_convert*"]
+include = ["burnorm*"]
 
 [tool.setuptools.package-data]
-myanmar_uni_convert = [
+burnorm = [
   "legacy_maps/burg_fonts.json",
   "wininnwa/data/*.json",
 ]

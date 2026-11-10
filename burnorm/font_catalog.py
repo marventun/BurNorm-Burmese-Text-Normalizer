@@ -141,13 +141,13 @@ def classify_font(name):
         return "win"
     if key.startswith("academy") or key in ("aeyar", "aekari"):
         return "academy"
-    if any(key.startswith(item) for item in CE):
+    if key == "ce" or any(key.startswith(item) for item in CE):
         return "ce"
     if "myazedi" in key or key in ("bit", "mandalay"):
         return "myazedi"
     if any(key.startswith(item) for item in GANDAMAR):
         return "gandamar"
-    if any(key.startswith(item) for item in KING):
+    if key == "king" or any(key.startswith(item) for item in KING):
         return "king"
     if any(key.startswith(item) for item in WWIN):
         return "wwin"

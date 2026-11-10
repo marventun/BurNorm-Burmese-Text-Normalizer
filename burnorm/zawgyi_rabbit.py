@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 # Rabbit-Converter / Rabbit-Python — Zawgyi <-> Unicode for Myanmar.
 # Upstream: https://github.com/Rabbit-Converter/Rabbit-Python (MIT License)
-# Vendored and lightly adapted for myanmar-uni-convert.
+# Vendored and lightly adapted for BurNorm.
 
 import re
 

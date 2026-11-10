@@ -1,13 +1,14 @@
 # Third-party components
 
-This package redistributes or depends on the following open-source works.
-Keep these notices when you redistribute.
+This package redistributes or depends on the following open-source works used
+to convert Burmese text extracted from PDFs and other sources (legacy fonts,
+Zawgyi, Unicode). Keep these notices when you redistribute.
 
 ## Rabbit-Python (MIT)
 
 - Upstream: https://github.com/Rabbit-Converter/Rabbit-Python
 - Role: Zawgyi ↔ Unicode conversion rules
-- Local path: `myanmar_uni_convert/zawgyi_rabbit.py`
+- Local path: `burnorm/zawgyi_rabbit.py`
 
 ```
 MIT License (see upstream repository)
@@ -20,13 +21,13 @@ in the Software without restriction...
 
 - Upstream: https://github.com/scriptive/burglish
 - Role: OE slot tables for legacy Myanmar fonts (WinInnwa, Academy, CE, …)
-- Local path: `myanmar_uni_convert/legacy_maps/burg_fonts.json`
+- Local path: `burnorm/legacy_maps/burg_fonts.json`
 
 ## WinInnwa converter (MIT)
 
 - Copyright (c) 2018 Thura Hlaing
 - Role: syllable-aware WinInnwa ↔ Unicode conversion
-- Local path: `myanmar_uni_convert/wininnwa/`
+- Local path: `burnorm/wininnwa/`
 - Full MIT license text is retained in the source file headers.
 
 ## Google myanmar-tools / myanmartools (Apache-2.0)
@@ -42,4 +43,4 @@ in the Software without restriction...
 
 - Proprietary Myanmar font binaries (`.ttf` / `.otf`)
 - Copyrighted book PDFs or training corpora
-- PDF extract / OCR tooling
+- PDF extract tooling (bring your own extractor; this repo only converts the text)

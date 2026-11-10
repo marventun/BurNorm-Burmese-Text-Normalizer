@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>BurNorm · tester</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Noto+Sans+Myanmar:wght@400;600&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --ink: #1a2b28;
+      --muted: #5a6e6a;
+      --line: #c9d5d1;
+      --paper: #f3f6f4;
+      --panel: #ffffff;
+      --accent: #0f766e;
+      --accent-soft: #d7efe9;
+      --warn: #9a3412;
+      --radius: 14px;
+      --my: "Noto Sans Myanmar", "Padauk", "Myanmar Text", sans-serif;
+      --sans: "Outfit", system-ui, sans-serif;
+      --display: "Fraunces", Georgia, serif;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      font-family: var(--sans);
+      color: var(--ink);
+      background:
+        radial-gradient(1200px 500px at 10% -10%, #dff3ee 0%, transparent 55%),
+        radial-gradient(900px 400px at 100% 0%, #e8efe4 0%, transparent 50%),
+        var(--paper);
+      line-height: 1.45;
+    }
+
+    .wrap {
+      max-width: 1100px;
+      margin: 0 auto;
+      padding: 2rem 1.25rem 3rem;
+    }
+
+    header {
+      display: grid;
+      gap: 0.4rem;
+      margin-bottom: 1.5rem;
+    }
+    header .brand {
+      font-family: var(--display);
+      font-size: clamp(1.6rem, 3vw, 2.2rem);
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0;
+    }
+    header p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 42rem;
+    }
+
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem 1rem;
+      align-items: end;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    label {
+      display: grid;
+      gap: 0.35rem;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+    }
+    select, input[type="number"] {
+      font: inherit;
+      color: var(--ink);
+      background: var(--paper);
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      padding: 0.55rem 0.7rem;
+      min-width: 11rem;
+    }
+    .checks {
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      padding-bottom: 0.2rem;
+    }
+    .checks label {
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      text-transform: none;
+      letter-spacing: 0;
+      font-size: 0.92rem;
+      font-weight: 500;
+      color: var(--ink);
+      cursor: pointer;
+    }
+    .checks input { width: 1rem; height: 1rem; accent-color: var(--accent); }
+
+    .actions {
+      display: flex;
+      gap: 0.5rem;
+      margin-left: auto;
+      flex-wrap: wrap;
+    }
+    button {
+      font: inherit;
+      font-weight: 600;
+      border: 0;
+      border-radius: 999px;
+      padding: 0.65rem 1.1rem;
+      cursor: pointer;
+    }
+    button.primary {
+      background: var(--accent);
+      color: #fff;
+    }
+    button.primary:hover { filter: brightness(1.05); }
+    button.primary:disabled {
+      opacity: 0.55;
+      cursor: wait;
+    }
+    button.ghost {
+      background: transparent;
+      color: var(--ink);
+      border: 1px solid var(--line);
+    }
+    button.ghost:hover { background: var(--accent-soft); }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1rem;
+    }
+    @media (max-width: 820px) {
+      .grid { grid-template-columns: 1fr; }
+      .actions { margin-left: 0; width: 100%; }
+      .actions button { flex: 1; }
+    }
+
+    .pane {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      display: flex;
+      flex-direction: column;
+      min-height: 320px;
+      overflow: hidden;
+    }
+    .pane-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--line);
+      background: #fafcfb;
+    }
+    .pane-head h2 {
+      margin: 0;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .pane-head .hint {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    textarea {
+      flex: 1;
+      width: 100%;
+      border: 0;
+      resize: vertical;
+      min-height: 280px;
+      padding: 1rem;
+      font-family: var(--my);
+      font-size: 1.2rem;
+      line-height: 1.7;
+      color: var(--ink);
+      background: transparent;
+      outline: none;
+    }
+    #output { background: #fbfefd; }
+
+    .meta {
+      margin-top: 1rem;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 0.75rem;
+    }
+    @media (max-width: 820px) {
+      .meta { grid-template-columns: 1fr 1fr; }
+    }
+    .stat {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.85rem 1rem;
+    }
+    .stat .k {
+      font-size: 0.72rem;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: var(--muted);
+      font-weight: 600;
+    }
+    .stat .v {
+      margin-top: 0.25rem;
+      font-family: var(--display);
+      font-size: 1.15rem;
+      font-weight: 600;
+      word-break: break-word;
+    }
+    .stat .v.muted { color: var(--muted); font-family: var(--sans); font-size: 0.95rem; font-weight: 500; }
+
+    details {
+      margin-top: 1rem;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 0.75rem 1rem;
+    }
+    details summary {
+      cursor: pointer;
+      font-weight: 600;
+      color: var(--muted);
+    }
+    pre {
+      margin: 0.75rem 0 0;
+      overflow: auto;
+      font-size: 0.82rem;
+      background: #0f1c1a;
+      color: #d7efe9;
+      border-radius: 10px;
+      padding: 0.9rem;
+      max-height: 240px;
+    }
+
+    .error {
+      margin-top: 1rem;
+      padding: 0.85rem 1rem;
+      border-radius: 12px;
+      background: #fff1eb;
+      color: var(--warn);
+      border: 1px solid #f0c7b5;
+      display: none;
+    }
+    .error.show { display: block; }
+
+    footer {
+      margin-top: 1.5rem;
+      color: var(--muted);
+      font-size: 0.85rem;
+    }
+    footer code {
+      font-size: 0.8rem;
+      background: var(--accent-soft);
+      padding: 0.1rem 0.35rem;
+      border-radius: 6px;
+    }
+
+    .examples {
+      margin-top: 1rem;
+      margin-bottom: 1rem;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      padding: 0.85rem 1rem 1rem;
+    }
+    .examples > .ex-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 1rem;
+      margin-bottom: 0.65rem;
+    }
+    .examples > .ex-head h2 {
+      margin: 0;
+      font-size: 0.85rem;
+      font-weight: 600;
+      letter-spacing: 0.03em;
+      text-transform: uppercase;
+      color: var(--muted);
+    }
+    .examples > .ex-head .hint {
+      font-size: 0.8rem;
+      color: var(--muted);
+    }
+    .ex-group { margin-top: 0.75rem; }
+    .ex-group:first-of-type { margin-top: 0; }
+    .ex-group h3 {
+      margin: 0 0 0.45rem;
+      font-family: var(--display);
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--ink);
+    }
+    .ex-chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.45rem;
+    }
+    .ex-chip {
+      font: inherit;
+      font-size: 0.86rem;
+      font-weight: 500;
+      text-align: left;
+      border: 1px solid var(--line);
+      background: var(--paper);
+      color: var(--ink);
+      border-radius: 10px;
+      padding: 0.45rem 0.7rem;
+      cursor: pointer;
+      max-width: 100%;
+    }
+    .ex-chip:hover { background: var(--accent-soft); border-color: #9bc9c0; }
+    .ex-chip.active {
+      background: var(--accent);
+      border-color: var(--accent);
+      color: #fff;
+    }
+    .ex-chip small {
+      display: block;
+      font-size: 0.72rem;
+      font-weight: 400;
+      opacity: 0.8;
+      margin-top: 0.1rem;
+      font-family: var(--my);
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <h1 class="brand">BurNorm</h1>
+      <p>BurVision family — convert legacy / Zawgyi Burmese from PDFs to Unicode, or normalize Unicode Burmese.</p>
+    </header>
+
+    <div class="toolbar">
+      <label>
+        Mode
+        <select id="mode">
+          <option value="convert" selected>Convert + normalize</option>
+          <option value="normalize">Normalize only</option>
+        </select>
+      </label>
+      <label>
+        Font
+        <select id="font"></select>
+      </label>
+      <label>
+        Zawgyi min
+        <input id="zawgyiMin" type="number" min="0" max="1" step="0.05" value="0.5" />
+      </label>
+      <div class="checks">
+        <label><input id="auto" type="checkbox" checked /> Auto detect</label>
+        <label><input id="cleanup" type="checkbox" checked /> Cleanup</label>
+      </div>
+      <div class="actions">
+        <button type="button" class="ghost" id="swap">Swap ↕</button>
+        <button type="button" class="ghost" id="copy">Copy out</button>
+        <button type="button" class="primary" id="convert">Run</button>
+      </div>
+    </div>
+
+    <div class="grid">
+      <section class="pane">
+        <div class="pane-head">
+          <h2>Input</h2>
+          <span class="hint" id="inCount">0 chars</span>
+        </div>
+        <textarea id="input" placeholder="Paste WinInnwa / Academy / Zawgyi / … text here" spellcheck="false"></textarea>
+      </section>
+      <section class="pane">
+        <div class="pane-head">
+          <h2>Unicode output</h2>
+          <span class="hint" id="outCount">0 chars</span>
+        </div>
+        <textarea id="output" readonly placeholder="Converted text appears here" spellcheck="false"></textarea>
+      </section>
+    </div>
+
+    <div class="meta">
+      <div class="stat"><div class="k">Branch</div><div class="v" id="branch">—</div></div>
+      <div class="stat"><div class="k">Kind</div><div class="v" id="kind">—</div></div>
+      <div class="stat"><div class="k">Zawgyi score</div><div class="v" id="score">—</div></div>
+      <div class="stat"><div class="k">Status</div><div class="v muted" id="status">Ready</div></div>
+    </div>
+
+    <section class="examples" aria-label="Examples">
+      <div class="ex-head">
+        <h2>Examples</h2>
+        <span class="hint">Click a chip to load settings + text, then run</span>
+      </div>
+      <div id="exampleList"></div>
+    </section>
+
+    <div class="error" id="error"></div>
+
+    <details>
+      <summary>Raw stats JSON</summary>
+      <pre id="stats">{}</pre>
+    </details>
+
+    <footer>
+      BurNorm local demo — run with <code>python web/app.py</code> then open this page.
+    </footer>
+  </div>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const input = $("input");
+    const output = $("output");
+    const fontSel = $("font");
+    const errorEl = $("error");
+    const exampleList = $("exampleList");
+    let examples = [];
+    let activeExampleId = "";
+
+    function setCount(el, text) {
+      el.textContent = `${[...text].length} chars`;
+    }
+
+    function showError(msg) {
+      if (!msg) {
+        errorEl.classList.remove("show");
+        errorEl.textContent = "";
+        return;
+      }
+      errorEl.textContent = msg;
+      errorEl.classList.add("show");
+    }
+
+    function syncModeUi() {
+      const normalizeOnly = $("mode").value === "normalize";
+      fontSel.disabled = normalizeOnly;
+      $("zawgyiMin").disabled = normalizeOnly;
+      $("auto").disabled = normalizeOnly;
+    }
+
+    function setActiveChip(id) {
+      activeExampleId = id || "";
+      exampleList.querySelectorAll(".ex-chip").forEach((btn) => {
+        btn.classList.toggle("active", btn.dataset.id === activeExampleId);
+      });
+    }
+
+    function applyExample(ex, run = true) {
+      $("mode").value = ex.mode || "convert";
+      syncModeUi();
+      fontSel.value = ex.font || "";
+      $("auto").checked = !!ex.auto;
+      input.value = ex.text || "";
+      setCount($("inCount"), input.value);
+      setActiveChip(ex.id);
+      $("status").textContent = ex.expect ? `Expect: ${ex.expect}` : "Ready";
+      if (run) convert();
+    }
+
+    function renderExamples(list) {
+      exampleList.innerHTML = "";
+      const groups = new Map();
+      for (const ex of list) {
+        const g = ex.group || "Examples";
+        if (!groups.has(g)) groups.set(g, []);
+        groups.get(g).push(ex);
+      }
+      for (const [group, items] of groups) {
+        const wrap = document.createElement("div");
+        wrap.className = "ex-group";
+        const h = document.createElement("h3");
+        h.textContent = group;
+        wrap.appendChild(h);
+        const chips = document.createElement("div");
+        chips.className = "ex-chips";
+        for (const ex of items) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "ex-chip";
+          btn.dataset.id = ex.id;
+          btn.innerHTML = `${ex.title}<small>${ex.blurb || ""}</small>`;
+          btn.addEventListener("click", () => applyExample(ex, true));
+          chips.appendChild(btn);
+        }
+        wrap.appendChild(chips);
+        exampleList.appendChild(wrap);
+      }
+    }
+
+    async function loadMeta() {
+      const res = await fetch("/api/meta");
+      const data = await res.json();
+      examples = data.examples || [];
+      fontSel.innerHTML = "";
+      for (const f of data.fonts || []) {
+        const opt = document.createElement("option");
+        opt.value = f.value;
+        opt.textContent = f.label;
+        fontSel.appendChild(opt);
+      }
+      renderExamples(examples);
+    }
+
+    async function convert() {
+      showError("");
+      const mode = $("mode").value;
+      $("status").textContent = mode === "normalize" ? "Normalizing…" : "Converting…";
+      $("convert").disabled = true;
+      try {
+        const res = await fetch("/api/convert", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            mode,
+            text: input.value,
+            font: fontSel.value || null,
+            auto: $("auto").checked,
+            cleanup: $("cleanup").checked,
+            zawgyi_min: Number($("zawgyiMin").value),
+          }),
+        });
+        const data = await res.json();
+        if (!res.ok) throw new Error(data.error || "Request failed");
+        output.value = data.text || "";
+        setCount($("outCount"), output.value);
+        $("branch").textContent = data.branch || "—";
+        $("kind").textContent = data.kind || "—";
+        $("score").textContent =
+          typeof data.zawgyi_score === "number"
+            ? data.zawgyi_score.toFixed(3)
+            : "—";
+        $("stats").textContent = JSON.stringify(data.stats || {}, null, 2);
+        $("status").textContent = "Done";
+      } catch (err) {
+        showError(err.message || String(err));
+        $("status").textContent = "Error";
+      } finally {
+        $("convert").disabled = false;
+      }
+    }
+
+    $("mode").addEventListener("change", syncModeUi);
+    syncModeUi();
+
+    input.addEventListener("input", () => {
+      setCount($("inCount"), input.value);
+      setActiveChip("");
+    });
+    $("convert").addEventListener("click", convert);
+    $("swap").addEventListener("click", () => {
+      const a = input.value;
+      input.value = output.value;
+      output.value = a;
+      setCount($("inCount"), input.value);
+      setCount($("outCount"), output.value);
+    });
+    $("copy").addEventListener("click", async () => {
+      try {
+        await navigator.clipboard.writeText(output.value);
+        $("status").textContent = "Copied";
+      } catch {
+        showError("Clipboard permission denied");
+      }
+    });
+    input.addEventListener("keydown", (e) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === "Enter") {
+        e.preventDefault();
+        convert();
+      }
+    });
+
+    loadMeta().catch((err) => showError(err.message || String(err)));
+  </script>
+</body>
+</html>
