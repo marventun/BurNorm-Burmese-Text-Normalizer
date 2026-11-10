@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "myanmar-uni-convert"
+version = "0.1.0"
+description = "Convert legacy Myanmar encodings and Zawgyi text to Unicode"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "Apache-2.0" }
+authors = [{ name = "Htoo Myat Tun" }]
+keywords = ["myanmar", "burmese", "unicode", "zawgyi", "wininnwa", "font"]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "Intended Audience :: Developers",
+  "License :: OSI Approved :: Apache Software License",
+  "Programming Language :: Python :: 3",
+  "Topic :: Text Processing :: Linguistic",
+]
+dependencies = []
+
+[project.optional-dependencies]
+detect = ["myanmartools>=1.2.0"]
+dev = ["pytest>=7.0", "myanmartools>=1.2.0"]
+
+[project.scripts]
+myanmar-uni-convert = "myanmar_uni_convert.cli:main"
+
+[project.urls]
+Homepage = "https://github.com/EXAMPLE/myanmar-uni-convert"
+Issues = "https://github.com/EXAMPLE/myanmar-uni-convert/issues"
+
+[tool.setuptools.packages.find]
+include = ["myanmar_uni_convert*"]
+
+[tool.setuptools.package-data]
+myanmar_uni_convert = [
+  "legacy_maps/burg_fonts.json",
+  "wininnwa/data/*.json",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]

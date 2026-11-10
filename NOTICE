@@ -1,0 +1,32 @@
+myanmar-uni-convert
+Copyright 2026 Htoo Myat Tun
+
+This product includes software developed by third parties.
+See THIRD_PARTY.md for full license texts and upstream links.
+
+Bundled / derived components
+----------------------------
+
+1. Rabbit Converter (Rabbit-Python)
+   https://github.com/Rabbit-Converter/Rabbit-Python
+   License: MIT
+   Used for Zawgyi ↔ Unicode rule conversion (vendored as zawgyi_rabbit.py).
+
+2. Burglish OE font mapping tables
+   https://github.com/scriptive/burglish
+   License: MIT
+   Used as legacy ASCII/ANSI font → Myanmar3 Unicode maps (burg_fonts.json).
+
+3. WinInnwa / Myanmar encoding converter
+   Copyright (c) 2018 Thura Hlaing
+   License: MIT
+   Vendored under myanmar_uni_convert/wininnwa/ (headers retained).
+
+4. Google Myanmar Tools (optional runtime dependency: myanmartools)
+   https://github.com/google/myanmar-tools
+   License: Apache License, Version 2.0
+   Used for Zawgyi probability detection when installed.
+
+This project is an encoding converter. It is not affiliated with font vendors.
+Font names are used only as identifiers. This distribution does not include
+proprietary font binary files (.ttf / .otf).
